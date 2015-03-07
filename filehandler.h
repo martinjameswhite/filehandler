@@ -13,6 +13,12 @@
 #include	<sys/stat.h>	// For the POSIX "stat" and "mkdir" functions.
 
 
+/*
+
+A simple and lightweight system for mocking up files with 1D arrays (vectors)
+of values stored by keyword.
+Assumes "myexit" and "myexception" are defined elsewhere.  Samples would be
+
 inline	void	myexit(const int iflag) {
   exit(iflag);
 }
@@ -21,6 +27,11 @@ inline void	myexception(std::exception& e) {
   myexit(1);
 }
 
+*/
+
+
+extern void	myexit(const int iflag);
+extern void	myexception(std::exception& e);
 
 
 class FileHandler {
@@ -29,6 +40,13 @@ class FileHandler {
 // on the file system with files for each "keyword" stored in the
 // appropriate directory.  Files have a type appended to their name as
 // one level of error checking upon re-read.
+// Note that keywords are case-sensitive, and you can overload fields
+// of different variables types (e.g. a long 'key1' and a float 'key1').
+// To keep this stateless there is no ability to read part of a field or
+// to append to a field.
+// Parallel routines should divide the data across multiple directories,
+// each accessed independently, to reduce the total memory per read/write
+// to an acceptable value and to take maximum advantage of parallel I/O.
 //
 // Author:	Martin White	(UCB)
 private:
