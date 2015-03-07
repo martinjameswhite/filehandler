@@ -21,6 +21,7 @@ def read_file(fname,keys=None):
     Reads a specificed list of "keys" in a "file" of name fname,
     or all of the keys if keys==None.  Returns a dictionary of
     NumPy arrays.
+    Does minimal checking, assuming you know what you're doing.
     """
     # Get a list of all of the "fields" in the "file".
     flist = glob.glob(fname+"/*[fi][48]")
@@ -60,6 +61,7 @@ def write_file(fname,data):
     write_file(fname,data):
     Writes the dictionary, data, which is meant to contain only
     NumPy arrays, to a "file" of name fname.
+    Does minimal checking, assuming you know what you're doing.
     """
     # Put in a little object type converter.
     suffix={}
