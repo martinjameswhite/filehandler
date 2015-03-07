@@ -174,7 +174,7 @@ public:
     return(ret);
   }
   static void write_int(const char fname[], const char field[],
-                        std::vector<int> val) {
+                        const std::vector<int>& val) {
     make_dir(fname);
     std::stringstream ss;
     ss << fname << "/" << field << ".i4";
@@ -201,7 +201,7 @@ public:
     ofs.close();
   }
   static void write_float(const char fname[], const char field[],
-                          std::vector<float> val) {
+                          const std::vector<float>& val) {
     make_dir(fname);
     std::stringstream ss;
     ss << fname << "/" << field << ".f4";
@@ -227,7 +227,7 @@ public:
     ofs.close();
   }
   static void write_long(const char fname[], const char field[],
-                         std::vector<long> val) {
+                         const std::vector<long>& val) {
     make_dir(fname);
     std::stringstream ss;
     ss << fname << "/" << field << ".i8";
@@ -253,7 +253,7 @@ public:
     ofs.close();
   }
   static void write_dble(const char fname[], const char field[],
-                         std::vector<double> val) {
+                         const std::vector<double>& val) {
     make_dir(fname);
     std::stringstream ss;
     ss << fname << "/" << field << ".f8";
