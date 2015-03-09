@@ -65,16 +65,17 @@ def write_file(fname,data):
     """
     # Put in a little object type converter.
     suffix={}
-    suffix['int32']='.i4'
-    suffix['int64']='.i8'
-    suffix['float32']='.f4'
-    suffix['float64']='.f8'
+    suffix['int32']='i4'
+    suffix['int64']='i8'
+    suffix['float32']='f4'
+    suffix['float64']='f8'
     if not os.path.exists(fname):
         os.mkdir(fname)
     for key in data.keys():
-        ff  = open(fname+"/"+key+suffix[data[key].dtype.name],"w")
+        dt  = suffix[data[key].dtype.name]
+        ff  = open(fname+"/"+key+"."+dt,"w")
         nobj= N.array( data[key].size, dtype='i8' )
         nobj.tofile(ff)
-        data[key].tofile(ff)
+        data[key].astype('<'+dt).tofile(ff)
         ff.close()
     #
