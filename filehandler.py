@@ -35,15 +35,16 @@ def read_file(fname,keys=None):
         else:
             key = mm.group(1)
             objt= mm.group(2)
+        objt = '<'+objt		# Enforce little endian.
         # and add it to the dictionary
         if keys==None:	# Need to do it this way since can't iterate None.
             ff  = open(fn,"r")
-            nobj= N.fromfile(ff,count=1,dtype='i8')
+            nobj= N.fromfile(ff,count=1,dtype='<i8')
             ret[key]=N.fromfile(ff,count=nobj,dtype=objt)
             ff.close()
         elif key in keys:
             ff  = open(fn,"r")
-            nobj= N.fromfile(ff,count=1,dtype='i8')
+            nobj= N.fromfile(ff,count=1,dtype='<i8')
             ret[key]=N.fromfile(ff,count=nobj,dtype=objt)
             ff.close()
     # Now check we got everything.
@@ -74,7 +75,7 @@ def write_file(fname,data):
     for key in data.keys():
         dt  = suffix[data[key].dtype.name]
         ff  = open(fname+"/"+key+"."+dt,"w")
-        nobj= N.array( data[key].size, dtype='i8' )
+        nobj= N.array( data[key].size, dtype='<i8' )
         nobj.tofile(ff)
         data[key].astype('<'+dt).tofile(ff)
         ff.close()
