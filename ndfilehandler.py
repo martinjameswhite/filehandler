@@ -22,6 +22,7 @@ def read_file_helper(fn):
     nobj = np.prod(dims)
     ret=N.fromfile(ff,count=nobj,dtype=objt)
     ff.close()
+    ret=ret.reshape(dims)
     return(ret)
 
 def read_file(fname,keys=None):
