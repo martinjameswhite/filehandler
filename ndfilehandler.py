@@ -15,11 +15,11 @@ import re
 import os
 
 
-def read_file_helper(fn):
+def read_file_helper(fn,objt):
     ff  = open(fn,"r")
     ndim = N.fromfile(ff,count=1,dtype='<i4')
     dims = N.fromfile(ff,count=ndim,dtype='<i8')
-    nobj = np.prod(dims)
+    nobj = N.prod(dims)
     ret=N.fromfile(ff,count=nobj,dtype=objt)
     ff.close()
     ret=ret.reshape(dims)
@@ -48,9 +48,9 @@ def read_file(fname,keys=None):
         objt = '<'+objt		# Enforce little endian.
         # and add it to the dictionary
         if keys==None:	# Need to do it this way since can't iterate None.
-            ret[key] = read_file_helper(fn)
+            ret[key] = read_file_helper(fn,objt)
         elif key in keys:
-            ret[key] = read_file_helper(fn)
+            ret[key] = read_file_helper(fn,objt)
     # Now check we got everything.
     if keys!=None:
         for key in keys:
