@@ -17,6 +17,8 @@
 
 A simple and lightweight system for mocking up files with 1D arrays (vectors)
 of values stored by keyword.
+Overloaded read/write methods do a simple version of multi-D arrays, stored
+as 1D vectors but with additional information on the dimensions.
 Assumes "myexit" and "myexception" are defined elsewhere.  Samples would be
 
 inline	void	myexit(const int iflag) {
@@ -66,6 +68,7 @@ private:
   }
 public:
   static std::vector<int> read_int(const char fname[], const char field[]) {
+    // Read an integer field.
     std::stringstream ss;
     ss << fname << "/" << field << ".i4";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
@@ -92,7 +95,48 @@ public:
     ifs.close();
     return(ret);
   }
+  static std::vector<int> read_int(const char fname[], const char field[],
+                                   std::vector<long>& ndims) {
+    // This overloaded read_int will read a multidimensional array,
+    // returning a vector of ints but also the dimensions so you can
+    // interpret it as a multidimensional array.
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.i4";
+    std::ifstream ifs(ss.str().c_str(),std::ios::binary);
+    if (!ifs) {
+      std::cerr<<"Unable to find int field "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int  ndim;
+    ifs.read((char *)&ndim,sizeof(int));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read dims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    try{ndims.resize(ndim);}catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ndims[0],ndim*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read ndims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    long nsize=1;
+    for (int i=0; i<ndims.size(); ++i) nsize *= ndims[i];
+    std::vector<int> ret;
+    try {ret.resize(nsize);} catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ret[0],nsize*sizeof(int));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read data for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ifs.close();
+    return(ret);
+  }
   static std::vector<float> read_float(const char fname[], const char field[]){
+    // Read a float field.
     std::stringstream ss;
     ss << fname << "/" << field << ".f4";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
@@ -119,7 +163,48 @@ public:
     ifs.close();
     return(ret);
   }
+  static std::vector<float> read_float(const char fname[], const char field[],
+                                       std::vector<long>& ndims){
+    // This overloaded read_float will read a multidimensional array,
+    // returning a vector of floats but also the dimensions so you can
+    // interpret it as a multidimensional array.
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.f4";
+    std::ifstream ifs(ss.str().c_str(),std::ios::binary);
+    if (!ifs) {
+      std::cerr<<"Unable to find float field "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int ndim;
+    ifs.read((char *)&ndim,sizeof(int));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read dims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    try{ndims.resize(ndim);}catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ndims[0],ndim*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read ndims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    long nsize=1;
+    for (int i=0; i<ndims.size(); ++i) nsize *= ndims[i];
+    std::vector<float> ret;
+    try {ret.resize(nsize);} catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ret[0],nsize*sizeof(float));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read data for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ifs.close();
+    return(ret);
+  }
   static std::vector<long> read_long(const char fname[], const char field[]){
+    // Read a long field.
     std::stringstream ss;
     ss << fname << "/" << field << ".i8";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
@@ -146,7 +231,48 @@ public:
     ifs.close();
     return(ret);
   }
+  static std::vector<long> read_long(const char fname[], const char field[],
+                                     std::vector<long>& ndims){
+    // This overloaded read_long will read a multidimensional array,
+    // returning a vector of longs but also the dimensions so you can
+    // interpret it as a multidimensional array.
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.i8";
+    std::ifstream ifs(ss.str().c_str(),std::ios::binary);
+    if (!ifs) {
+      std::cerr<<"Unable to find long field "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int ndim;
+    ifs.read((char *)&ndim,sizeof(int));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read dims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    try{ndims.resize(ndim);}catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ndims[0],ndim*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read ndims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    long nsize=1;
+    for (int i=0; i<ndims.size(); ++i) nsize *= ndims[i];
+    std::vector<long> ret;
+    try {ret.resize(nsize);} catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ret[0],nsize*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read data for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ifs.close();
+    return(ret);
+  }
   static std::vector<double> read_dble(const char fname[], const char field[]){
+    // Read a double field.
     std::stringstream ss;
     ss << fname << "/" << field << ".i8";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
@@ -173,8 +299,49 @@ public:
     ifs.close();
     return(ret);
   }
+  static std::vector<double> read_dble(const char fname[], const char field[],
+                                       std::vector<long>& ndims){
+    // This overloaded read_dble will read a multidimensional array,
+    // returning a vector of doubles but also the dimensions so you can
+    // interpret it as a multidimensional array.
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.i8";
+    std::ifstream ifs(ss.str().c_str(),std::ios::binary);
+    if (!ifs) {
+      std::cerr<<"Unable to find dble field "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int ndim;
+    ifs.read((char *)&ndim,sizeof(int));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read dims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    try{ndims.resize(ndim);}catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ndims[0],ndim*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read ndims for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    long nsize=1;
+    for (int i=0; i<ndims.size(); ++i) nsize *= ndims[i];
+    std::vector<double> ret;
+    try {ret.resize(nsize);} catch(std::exception& e) {myexception(e);}
+    ifs.read((char *)&ret[0],nsize*sizeof(long));
+    if (ifs.fail()) {
+      std::cerr<<"Unable to read data for "<<field<<" in "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ifs.close();
+    return(ret);
+  }
   static void write_int(const char fname[], const char field[],
                         const std::vector<int>& val) {
+    // Writes an int field.
     make_dir(fname);
     std::stringstream ss;
     ss << fname << "/" << field << ".i4";
@@ -193,6 +360,41 @@ public:
       myexit(1);
     }
     ofs.write((char *)&val[0],nsize*sizeof(int));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.close();
+  }
+  static void write_int(const char fname[], const char field[],
+                        const std::vector<int>& val,
+                        const std::vector<long>& ndims) {
+    // This overloaded write_int will write a multidimensional array.
+    make_dir(fname);
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.i4";
+    std::ofstream ofs(ss.str().c_str(),std::ios::binary|std::ios::trunc);
+    if (!ofs) {
+      std::cerr<<ss.str().c_str()<<std::endl;
+      std::cerr<<"Unable to write field "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int  ndim =ndims.size();
+    ofs.write((char *)&ndim,sizeof(int));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndim for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&ndims[0],ndim*sizeof(long));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndims for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&val[0],val.size()*sizeof(int));
     if (ofs.fail()) {
       std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
       std::cerr.flush();
@@ -226,6 +428,40 @@ public:
     }
     ofs.close();
   }
+  static void write_float(const char fname[], const char field[],
+                          const std::vector<float>& val,
+                          const std::vector<long>& ndims) {
+    // This overloaded write_float will write a multidimensional array.
+    make_dir(fname);
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.f4";
+    std::ofstream ofs(ss.str().c_str(),std::ios::binary|std::ios::trunc);
+    if (!ofs) {
+      std::cerr<<"Unable to write field "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int  ndim =ndims.size();
+    ofs.write((char *)&ndim,sizeof(int));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndim for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&ndims[0],ndim*sizeof(long));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndims for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&val[0],val.size()*sizeof(float));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.close();
+  }
   static void write_long(const char fname[], const char field[],
                          const std::vector<long>& val) {
     make_dir(fname);
@@ -252,6 +488,39 @@ public:
     }
     ofs.close();
   }
+  static void write_long(const char fname[], const char field[],
+                         const std::vector<long>& val,
+                         const std::vector<long>& ndims) {
+    make_dir(fname);
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.i8";
+    std::ofstream ofs(ss.str().c_str(),std::ios::binary|std::ios::trunc);
+    if (!ofs) {
+      std::cerr<<"Unable to write field "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int  ndim =ndims.size();
+    ofs.write((char *)&ndim,sizeof(int));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndim for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&ndims[0],ndim*sizeof(long));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndims for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&val[0],val.size()*sizeof(long));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.close();
+  }
   static void write_dble(const char fname[], const char field[],
                          const std::vector<double>& val) {
     make_dir(fname);
@@ -271,6 +540,39 @@ public:
       myexit(1);
     }
     ofs.write((char *)&val[0],nsize*sizeof(double));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.close();
+  }
+  static void write_dble(const char fname[], const char field[],
+                         const std::vector<double>& val,
+                         const std::vector<long>& ndims) {
+    make_dir(fname);
+    std::stringstream ss;
+    ss << fname << "/" << field << ".nd.f8";
+    std::ofstream ofs(ss.str().c_str(),std::ios::binary|std::ios::trunc);
+    if (!ofs) {
+      std::cerr<<"Unable to write field "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    int  ndim =ndims.size();
+    ofs.write((char *)&ndim,sizeof(int));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndim for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&ndims[0],ndim*sizeof(long));
+    if (ofs.fail()) {
+      std::cerr<<"Unable to write ndims for "<<field<<" to "<<fname<<std::endl;
+      std::cerr.flush();
+      myexit(1);
+    }
+    ofs.write((char *)&val[0],val.size()*sizeof(double));
     if (ofs.fail()) {
       std::cerr<<"Unable to write data for "<<field<<" to "<<fname<<std::endl;
       std::cerr.flush();
