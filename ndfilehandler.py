@@ -34,12 +34,12 @@ def read_file(fname,keys=None):
     Does minimal checking, assuming you know what you're doing.
     """
     # Get a list of all of the "fields" in the "file".
-    flist = glob.glob(fname+"/*[fi][48]")
+    flist = glob.glob(fname+"/*.nd.[fi][48]")
     # and start filling in my dictionary.
     ret = {}
     for fn in flist:
         # Get the field name and type.
-        mm = re.search(fname+"/"+r"(\w*)\.([fi][48])",fn)
+        mm = re.search(fname+"/"+r"(\w*)\.nd\.([fi][48])",fn)
         if mm==None:
             raise RuntimeError,"Unable to parse file "+fn
         else:
@@ -78,7 +78,7 @@ def write_file(fname,data):
         os.mkdir(fname)
     for key in data.keys():
         dt  = suffix[data[key].dtype.name]
-        ff  = open(fname+"/"+key+"."+dt,"w")
+        ff  = open(fname+"/"+key+".nd."+dt,"w")
         shape =data[key].shape
         ndim = N.array(len(shape),dtype='<i4')
         dims = N.array(shape,dtype='<i8')
