@@ -305,7 +305,7 @@ public:
     // returning a vector of doubles but also the dimensions so you can
     // interpret it as a multidimensional array.
     std::stringstream ss;
-    ss << fname << "/" << field << ".nd.i8";
+    ss << fname << "/" << field << ".nd.f8";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
     if (!ifs) {
       std::cerr<<"Unable to find dble field "<<field<<" in "<<fname<<std::endl;
