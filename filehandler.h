@@ -274,7 +274,7 @@ public:
   static std::vector<double> read_dble(const char fname[], const char field[]){
     // Read a double field.
     std::stringstream ss;
-    ss << fname << "/" << field << ".i8";
+    ss << fname << "/" << field << ".f8";
     std::ifstream ifs(ss.str().c_str(),std::ios::binary);
     if (!ifs) {
       std::cerr<<"Unable to find dble field "<<field<<" in "<<fname<<std::endl;
