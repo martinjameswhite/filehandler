@@ -8,7 +8,8 @@ hierarchical storage systems while providing some of the functionality seen
 in formats such as FITS or HDF5.  Keys can be easily added to existing files,
 subsets of the data can be easily read or written.  Since the data format is
 "flat files" under the hood, it is almost trivial to write a wrapper for
-any language.
+any language.  The directories can be packaged into e.g. tar files for
+transport or storage using standard utilities.
 
 Currently only handles simple int, float, long and double arrays and
 assumes a POSIX file system.
