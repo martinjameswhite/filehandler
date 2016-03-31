@@ -36,11 +36,13 @@ the column, and <type> is the type of data stored inside. Types supported are li
 
 An example :
 
+```
 boss-galaxies/
    ra.nd.f8
    dec.nd.f8
    z.nd.f4
    id.nd.i4
+```
 
 The columns above are ra, dec,z, and id.
 
