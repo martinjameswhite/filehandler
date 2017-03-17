@@ -18,7 +18,7 @@ import os
 def read_file_helper(fn,objt):
     ff  = open(fn,"r")
     ndim = N.fromfile(ff,count=1,dtype='<i4')
-    dims = N.fromfile(ff,count=ndim,dtype='<i8')
+    dims = N.fromfile(ff,count=ndim[0],dtype='<i8')
     nobj = N.prod(dims)
     ret=N.fromfile(ff,count=nobj,dtype=objt)
     ff.close()
@@ -41,7 +41,7 @@ def read_file(fname,keys=None):
         # Get the field name and type.
         mm = re.search(fname+"/"+r"(\w*)\.nd\.([fi][48])",fn)
         if mm==None:
-            raise RuntimeError,"Unable to parse file "+fn
+            raise RuntimeError("Unable to parse file "+fn)
         else:
             key = mm.group(1)
             objt= mm.group(2)
@@ -55,7 +55,7 @@ def read_file(fname,keys=None):
     if keys!=None:
         for key in keys:
             if key not in ret.keys():
-                raise RuntimeError,"Unable to find "+key+" in "+fname
+                raise RuntimeError("Unable to find "+key+" in "+fname)
     return(ret)
     #
 
