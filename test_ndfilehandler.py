@@ -1,3 +1,4 @@
+from __future__ import print_function
 from ndfilehandler import read_file, write_file;
 import numpy as np
 
@@ -9,6 +10,6 @@ write_file("ndtest",data)
 
 ## Read in the file
 data2 = read_file("ndtest",None)
-print data['farr']==data2['farr']
-print data['iarr']==data2['iarr']
-print data2['iarr'].shape
+print(data['farr']==data2['farr'])
+print(data['iarr']==data2['iarr'])
+print(data2['iarr'].shape)
