@@ -9,7 +9,7 @@ __version__ = "1.0"
 __email__  = "mwhite@berkeley.edu"
 
 
-import numpy as N
+import numpy as np
 import glob
 import re
 import os
@@ -17,10 +17,10 @@ import os
 
 def read_file_helper(fn,objt):
     ff  = open(fn,"r")
-    ndim = N.fromfile(ff,count=1,dtype='<i4')
-    dims = N.fromfile(ff,count=ndim[0],dtype='<i8')
-    nobj = N.prod(dims)
-    ret=N.fromfile(ff,count=nobj,dtype=objt)
+    ndim = np.fromfile(ff,count=1,dtype='<i4')[0]
+    dims = np.fromfile(ff,count=ndim,dtype='<i8')
+    nobj = np.prod(dims)
+    ret=np.fromfile(ff,count=nobj,dtype=objt)
     ff.close()
     ret=ret.reshape(dims)
     return(ret)
@@ -41,7 +41,7 @@ def read_file(fname,keys=None):
         # Get the field name and type.
         mm = re.search(fname+"/"+r"(\w*)\.nd\.([fi][48])",fn)
         if mm==None:
-            raise RuntimeError("Unable to parse file "+fn)
+            raise(RuntimeError("Unable to parse file "+fn))
         else:
             key = mm.group(1)
             objt= mm.group(2)
@@ -55,7 +55,7 @@ def read_file(fname,keys=None):
     if keys!=None:
         for key in keys:
             if key not in ret.keys():
-                raise RuntimeError("Unable to find "+key+" in "+fname)
+                raise(RuntimeError("Unable to find "+key+" in "+fname))
     return(ret)
     #
 
@@ -80,8 +80,8 @@ def write_file(fname,data):
         dt  = suffix[data[key].dtype.name]
         ff  = open(fname+"/"+key+".nd."+dt,"w")
         shape =data[key].shape
-        ndim = N.array(len(shape),dtype='<i4')
-        dims = N.array(shape,dtype='<i8')
+        ndim = np.array(len(shape),dtype='<i4')
+        dims = np.array(shape,dtype='<i8')
         ndim.tofile(ff)
         dims.tofile(ff)
         data[key].astype('<'+dt).tofile(ff)

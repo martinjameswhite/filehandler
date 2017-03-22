@@ -9,7 +9,7 @@ __version__ = "1.0"
 __email__  = "mwhite@berkeley.edu"
 
 
-import numpy as N
+import numpy as np
 import glob
 import re
 import os
@@ -31,7 +31,7 @@ def read_file(fname,keys=None):
         # Get the field name and type.
         mm = re.search(fname+"/"+r"(\w*)\.([fi][48])",fn)
         if mm==None:
-            raise RuntimeError,"Unable to parse file "+fn
+            raise(RuntimeError,"Unable to parse file "+fn)
         else:
             key = mm.group(1)
             objt= mm.group(2)
@@ -39,19 +39,19 @@ def read_file(fname,keys=None):
         # and add it to the dictionary
         if keys==None:	# Need to do it this way since can't iterate None.
             ff  = open(fn,"r")
-            nobj= N.fromfile(ff,count=1,dtype='<i8')
-            ret[key]=N.fromfile(ff,count=nobj,dtype=objt)
+            nobj= np.fromfile(ff,count=1,dtype='<i8')[0]
+            ret[key]=np.fromfile(ff,count=nobj,dtype=objt)
             ff.close()
         elif key in keys:
             ff  = open(fn,"r")
-            nobj= N.fromfile(ff,count=1,dtype='<i8')
-            ret[key]=N.fromfile(ff,count=nobj,dtype=objt)
+            nobj= np.fromfile(ff,count=1,dtype='<i8')[0]
+            ret[key]=np.fromfile(ff,count=nobj,dtype=objt)
             ff.close()
     # Now check we got everything.
     if keys!=None:
         for key in keys:
             if key not in ret.keys():
-                raise RuntimeError,"Unable to find "+key+" in "+fname
+                raise(RuntimeError,"Unable to find "+key+" in "+fname)
     return(ret)
     #
 
@@ -75,7 +75,7 @@ def write_file(fname,data):
     for key in data.keys():
         dt  = suffix[data[key].dtype.name]
         ff  = open(fname+"/"+key+"."+dt,"w")
-        nobj= N.array( data[key].size, dtype='<i8' )
+        nobj= np.array( data[key].size, dtype='<i8' )
         nobj.tofile(ff)
         data[key].astype('<'+dt).tofile(ff)
         ff.close()
